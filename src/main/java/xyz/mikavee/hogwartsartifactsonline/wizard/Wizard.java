@@ -1,9 +1,6 @@
 package xyz.mikavee.hogwartsartifactsonline.wizard;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import xyz.mikavee.hogwartsartifactsonline.artifact.Artifact;
 
 import java.io.Serializable;
@@ -13,7 +10,10 @@ import java.util.List;
 @Entity
 public class Wizard implements Serializable{
 
+
     @Id
+
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     private String name;
@@ -25,7 +25,7 @@ public class Wizard implements Serializable{
     public Wizard() {
     }
 
-    // GEtters and SETters
+    // GETters and SETters
 
     public Integer getId() {
         return id;
@@ -58,5 +58,10 @@ public class Wizard implements Serializable{
 
     public Integer numOfArtifact() {
         return this.getArtifacts().size();
+    }
+
+    public void removeAllArtifacts(){
+        this.artifacts.stream().forEach(artifact -> artifact.setOwner(null));
+        this.artifacts = new ArrayList<>();
     }
 }
