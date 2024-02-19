@@ -1,8 +1,6 @@
 package xyz.mikavee.hogwartsartifactsonline.artifact;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import xyz.mikavee.hogwartsartifactsonline.wizard.Wizard;
 
 import java.io.Serializable;

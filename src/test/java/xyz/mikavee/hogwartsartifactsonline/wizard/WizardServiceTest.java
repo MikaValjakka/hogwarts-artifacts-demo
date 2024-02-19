@@ -9,6 +9,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import xyz.mikavee.hogwartsartifactsonline.artifact.Artifact;
+import xyz.mikavee.hogwartsartifactsonline.artifact.ArtifactNotFoundException;
+import xyz.mikavee.hogwartsartifactsonline.artifact.ArtifactRepository;
 import xyz.mikavee.hogwartsartifactsonline.artifact.utils.IdWorker;
 
 import java.util.ArrayList;
@@ -26,6 +29,9 @@ public class WizardServiceTest {
 
     @Mock
     WizardRepository wizardRepository;
+
+    @Mock
+    ArtifactRepository artifactRepository;
 
     @Mock
     IdWorker idWorker;
@@ -192,5 +198,88 @@ public class WizardServiceTest {
 
         // Then
         verify(this.wizardRepository, times(1)).findById(1);
+    }
+
+    @Test
+    void testAssignArtifactSuccess() {
+        // Given
+        Artifact a = new Artifact();
+        a.setId("1234567890");
+        a.setName("Amazing Artifact");
+        a.setDescription("Amazing artifact that will be assign to Incredible wizard.");
+        a.setImageUrl("ImageUrl");
+
+        Wizard w1 = new Wizard();
+        w1.setId(2);
+        w1.setName("Harry Potter");
+        w1.addArtifact(a);
+
+        Wizard w2 = new Wizard();
+        w2.setId(3);
+        w2.setName("Neville Longbottom");
+
+        given(this.artifactRepository.findById("1234567890")).willReturn(Optional.of(a));
+        given(this.wizardRepository.findById(3)).willReturn(Optional.of(w2));
+
+        // When
+        this.wizardService.assignArtifact(3,"1234567890");
+
+        // Then
+        assertThat(a.getOwner().getId()).isEqualTo(3);
+        assertThat(w2.getArtifacts()).contains(a);
+    }
+
+    @Test
+    void testAssignArtifactErrorWithNonExistentWizard() {
+        // Given
+        Artifact a = new Artifact();
+        a.setId("1234567890");
+        a.setName("Amazing Artifact");
+        a.setDescription("Amazing artifact that will be assign to Incredible wizard.");
+        a.setImageUrl("ImageUrl");
+
+        Wizard w1 = new Wizard();
+        w1.setId(2);
+        w1.setName("Harry Potter");
+        w1.addArtifact(a);
+
+
+        given(this.artifactRepository.findById("1234567890")).willReturn(Optional.of(a));
+        // No wizard will be found
+        given(this.wizardRepository.findById(3)).willReturn(Optional.empty());
+
+        // When
+        Throwable thrown = assertThrows(WizardNotFoundException.class, () -> {
+            this.wizardService.assignArtifact(3,"1234567890");
+        });
+
+        // Then
+        assertThat(thrown)
+                .isInstanceOf(WizardNotFoundException.class)
+                        .hasMessage("Could not find wizard with id 3 :(");
+        assertThat(a.getOwner().getId()).isEqualTo(2);
+
+    }
+
+    @Test
+    void testAssignArtifactErrorWithNonExistentArtifact() {
+        // Given
+
+        // Artifact won't exist
+
+
+        given(this.artifactRepository.findById("1234567890")).willReturn(Optional.empty());
+
+
+        // When
+        Throwable thrown = assertThrows(ArtifactNotFoundException.class, () -> {
+            this.wizardService.assignArtifact(3,"1234567890");
+        });
+
+        // Then
+        assertThat(thrown)
+                .isInstanceOf(ArtifactNotFoundException.class)
+                .hasMessage("Could not find artifact with id 1234567890 :(");
+
     }
 }
