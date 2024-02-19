@@ -12,7 +12,6 @@ public class Wizard implements Serializable{
 
 
     @Id
-
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
@@ -52,7 +51,10 @@ public class Wizard implements Serializable{
     }
 
     public void addArtifact(Artifact artifact) {
+        System.out.println("----- Adding artifact to wizard: Inside addArtifact method of Wizrd class");
         artifact.setOwner(this);
+        System.out.println("Setting owner: "+this+" to artifact: "+ artifact);
+
         this.artifacts.add(artifact);
     }
 
@@ -63,5 +65,11 @@ public class Wizard implements Serializable{
     public void removeAllArtifacts(){
         this.artifacts.stream().forEach(artifact -> artifact.setOwner(null));
         this.artifacts = new ArrayList<>();
+    }
+
+    public void removeArtifact(Artifact foundArtifact) {
+        System.out.println("In the removeArtifact method");
+        foundArtifact.setOwner(null);
+        this.artifacts.remove(foundArtifact);
     }
 }
