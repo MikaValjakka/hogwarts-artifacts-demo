@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import xyz.mikavee.hogwartsartifactsonline.artifact.Artifact;
 import xyz.mikavee.hogwartsartifactsonline.artifact.ArtifactRepository;
 import xyz.mikavee.hogwartsartifactsonline.hogwartsuser.HogwartsUser;
-import xyz.mikavee.hogwartsartifactsonline.hogwartsuser.UserRepository;
+import xyz.mikavee.hogwartsartifactsonline.hogwartsuser.UserService;
 import xyz.mikavee.hogwartsartifactsonline.wizard.Wizard;
 import xyz.mikavee.hogwartsartifactsonline.wizard.WizardRepository;
 
@@ -14,12 +14,12 @@ public class DBDataInitializer implements CommandLineRunner {
 
     private final ArtifactRepository artifactRepository;
     private final WizardRepository wizardRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public DBDataInitializer(ArtifactRepository artifactRepository, WizardRepository wizardRepository, UserRepository userRepository) {
+    public DBDataInitializer(ArtifactRepository artifactRepository, WizardRepository wizardRepository, UserService userService) {
         this.artifactRepository = artifactRepository;
         this.wizardRepository = wizardRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -100,8 +100,8 @@ public class DBDataInitializer implements CommandLineRunner {
         u2.setEnabled(true);
         u2.setRoles("user");
 
-        this.userRepository.save(u1);
-        this.userRepository.save(u2);
+        this.userService.save(u1);
+        this.userService.save(u2);
 
 
 
