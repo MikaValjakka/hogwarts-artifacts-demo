@@ -20,4 +20,4 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: build and test with maven
-        run: maven --batch-mode package
+        run: mvn --batch-mode package
