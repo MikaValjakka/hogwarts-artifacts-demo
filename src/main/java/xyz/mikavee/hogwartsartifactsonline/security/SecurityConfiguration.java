@@ -72,6 +72,9 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.DELETE, this.baseUrl + "/users/**").hasAuthority("ROLE_admin")
                         // making H2 console public
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
+                        // allowing swagger-ui
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/demo/fixed-token/**").permitAll()
                         .anyRequest().authenticated() // always a good idea to put this as last
                 )
                 .headers(h -> h.frameOptions(frameOptions -> frameOptions.disable())) // This is for H2 browser console access
